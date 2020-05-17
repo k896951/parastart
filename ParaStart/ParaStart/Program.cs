@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 
 namespace parastart
 {
-    enum retcodeType
+    enum RetcodeType
     {
         allways
        , anysafe
@@ -25,20 +25,20 @@ namespace parastart
 
         static int Main(string[] args)
         {
-            parsargs p = new parsargs(args);
+            ParsArgs p = new ParsArgs(args);
             Process[] pa;
             Task[] ta;
 
-            if (0 == p.commands.Length)
+            if (0 == p.Commands.Length)
             {
                 help();
                 Environment.Exit(0);
             }
 
-            pa = new Process[p.commands.Length];
-            ta = new Task[p.commands.Length];
+            pa = new Process[p.Commands.Length];
+            ta = new Task[p.Commands.Length];
 
-            for (int i = 0; i < p.commands.Length; i++)
+            for (int i = 0; i < p.Commands.Length; i++)
             {
                 int ii = i;
 
@@ -46,14 +46,14 @@ namespace parastart
                 ta[ii] = new Task(() =>
                 {
                     pa[ii].StartInfo.FileName = "CMD.EXE";
-                    pa[ii].StartInfo.Arguments = "/C " + "\"" + p.commands[ii] + "\"";
+                    pa[ii].StartInfo.Arguments = "/C;" + "\"" + p.Commands[ii] + "\"";
                     pa[ii].StartInfo.UseShellExecute = false;
                     pa[ii].StartInfo.CreateNoWindow = true;
                     pa[ii].StartInfo.ErrorDialog = true;
                     pa[ii].Start();
-                    if (0 != p.wait)
+                    if (0 != p.Wait)
                     {
-                        pa[ii].WaitForExit(p.wait);
+                        pa[ii].WaitForExit(p.Wait);
                     }
                     else
                     {
@@ -74,11 +74,11 @@ namespace parastart
                 if (0 == pa[i].ExitCode) safecount++;
             }
 
-            if ((p.runmode == retcodeType.allsafe) && (pa.Length == safecount))
+            if ((p.Runmode == RetcodeType.allsafe) && (pa.Length == safecount))
             {
                 ret = 0;
             }
-            if ((p.runmode == retcodeType.anysafe) && (0 != safecount))
+            if ((p.Runmode == RetcodeType.anysafe) && (0 != safecount))
             {
                 ret = 0;
             }
@@ -99,45 +99,45 @@ namespace parastart
         }
     }
 
-    class parsargs
+    class ParsArgs
     {
         String confFile = "";
-        retcodeType retType = retcodeType.allways;
+        RetcodeType retType = RetcodeType.allways;
         int waitTime = 0;
         String[] cmds;
 
         Regex optReg = new Regex(@"^-[a-zA-Z]+");
         String dummyfile = "dummyfile";
 
-        public retcodeType runmode
+        public RetcodeType Runmode
         {
             get
             {
                 return retType;
             }
         }
-        public String config
+        public string Config
         {
             get
             {
                 return confFile;
             }
         }
-        public String[] commands
+        public string[] Commands
         {
             get
             {
                 return cmds;
             }
         }
-        public int wait
+        public int Wait
         {
             get
             {
                 return waitTime;
             }
         }
-        public parsargs(string[] args)
+        public ParsArgs(string[] args)
         {
             Boolean swcmdflg = false;
             ArrayList ag = new ArrayList();
@@ -149,15 +149,15 @@ namespace parastart
                     switch (args[i].ToLower())
                     {
                         case "-zero":
-                            retType = retcodeType.allways;
+                            retType = RetcodeType.allways;
                             break;
 
                         case "-any":
-                            retType = retcodeType.anysafe;
+                            retType = RetcodeType.anysafe;
                             break;
 
                         case "-all":
-                            retType = retcodeType.allsafe;
+                            retType = RetcodeType.allsafe;
                             break;
 
                         case "-f":
