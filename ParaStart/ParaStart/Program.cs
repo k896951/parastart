@@ -1,4 +1,4 @@
-﻿// bgwait
+// parastart
 //
 // Copyright (C) 2020 Hideki Gotoh ( k896951 )
 //
